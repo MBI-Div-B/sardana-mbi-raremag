@@ -28,7 +28,7 @@ def userPreAcq(self):
         magnet      = self.getMotion(["magnet"])
         magnetState = DeviceProxy('raremag/MagnetState/magnet')
         
-        magnet.move(-1*ampl)
+        #magnet.move(-1*ampl)
         magnetState.magnet = -1*ampl
         
         self.debug('mag. waiting for %.2f s', magwaittime)
@@ -40,7 +40,7 @@ def userPreAcq(self):
             mnt_grp     = self.getObj(self.getEnv('ActiveMntGrp'), type_class=Type.MeasurementGroup)
             state, data = mnt_grp.count(integ_time)
                        
-        magnet.move(+1*ampl)
+        #magnet.move(+1*ampl)
         magnetState.magnet = +1*ampl
         
         self.debug('mag. waiting for %.2f s', magwaittime)

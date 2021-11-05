@@ -10,7 +10,7 @@ def alton(self):
     
     # enable minus field counters
     mnt_grp = self.getObj(self.getEnv('ActiveMntGrp'), type_class=Type.MeasurementGroup)
-    #mnt_grp.setEnabled(True, "specM", "spec1M", "spec2M", "spec3M", "spec4M","refM", "ref1M", "ref2M", "ref3M", "ref4M")
+    mnt_grp.setEnabled(True, "specM", "spec1M", "spec2M", "spec3M", "spec4M")#,"refM", "ref1M", "ref2M", "ref3M", "ref4M")
 
 
 @macro()    
@@ -23,5 +23,5 @@ def altoff(self):
     
     # disable minus field counters
     mnt_grp = self.getObj(self.getEnv('ActiveMntGrp'), type_class=Type.MeasurementGroup)
-    #mnt_grp.setEnabled(False, "specM", "spec1M", "spec2M", "spec3M", "spec4M", "refM", "ref1M", "ref2M", "ref3M", "ref4M")
+    mnt_grp.setEnabled(False, "specM", "spec1M", "spec2M", "spec3M", "spec4M")#, "refM", "ref1M", "ref2M", "ref3M", "ref4M")
     
