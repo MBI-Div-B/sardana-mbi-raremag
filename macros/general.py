@@ -7,11 +7,19 @@ def acqconf(self):
     # run all the other configuration
     acqConf = self.getEnv('acqConf')
     label, unit = "Alternate On/Off", ""
+
     alt_on = self.input("Alternate Mode On/Off?", data_type=Type.Boolean,
                       title="Alternate Mode", key=label, unit=unit,
                       default_value=acqConf['altOn'])
     
     acqConf['altOn'] = alt_on
+
+    ref_on = self.input("Reference Mode On/Off?", data_type=Type.Boolean,
+                      title="Reference Mode", key=label, unit=unit,
+                      default_value=acqConf['refOn'])
+
+    acqConf['refOn'] = ref_on
+
     self.setEnv('acqConf', acqConf)
     
     self.execMacro('waittime')
@@ -24,8 +32,9 @@ def acqconf(self):
 @macro()
 def acqrep(self):
     acqConf = self.getEnv('acqConf')
-    self.output('Gen. Settings   : %s | Waittime = %.2f s', 
+    self.output('Gen. Settings   : %s | %s | Waittime = %.2f s', 
                 ('Alt ON' if acqConf['altOn'] else 'Alt OFF'),
+                ('Ref ON' if acqConf['refOn'] else 'Ref OFF'),
                 acqConf['waitTime'])
     self.execMacro('magnrep')
     self.execMacro('powerrep')

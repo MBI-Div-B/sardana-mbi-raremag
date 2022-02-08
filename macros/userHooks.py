@@ -14,6 +14,7 @@ from PyTango import DeviceProxy
 def userPreAcq(self):
     acqConf  = self.getEnv('acqConf')
     altOn    = acqConf['altOn']
+    refOn    = acqConf['refOn']
     waittime = acqConf['waitTime']
     
     if waittime:
@@ -47,17 +48,39 @@ def userPreAcq(self):
         time.sleep(magwaittime)                
     else:
         pass
+
+    if refOn:
+        PumpShutter=DeviceProxy('raremag/ThorlabsMFF102/flip02')
+
+        # open pump shutter
+        # print('Opening pump shutter')
+        PumpShutter.open()
+        time.sleep(1)
+
+        parent = self.getParentMacro()
+        if parent:
+            integ_time  = parent.integ_time
+            mnt_grp     = self.getObj(self.getEnv('ActiveMntGrp'), type_class=Type.MeasurementGroup)
+            state, data = mnt_grp.count(integ_time)
+
+        # close pump shutter
+        # print('Closing punp shutter')
+        PumpShutter.close()
+        time.sleep(1)
+    else:
+        pass
     
 @macro()
 def userPreScan(self):
     acqConf  = self.getEnv('acqConf')
     altOn    = acqConf['altOn']
+    refOn    = acqConf['refOn']
     
-    if altOn:
+    if altOn or refOn:
         parent = self.getParentMacro()
         if parent:
             parent._gScan.deterministic_scan = False
-    
+
     pass
     
 @macro()
