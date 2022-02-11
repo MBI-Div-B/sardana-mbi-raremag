@@ -52,9 +52,9 @@ def userPreAcq(self):
     if refOn:
         PumpShutter=DeviceProxy('raremag/ThorlabsMFF102/flip02')
 
-        # open pump shutter
-        # print('Opening pump shutter')
-        PumpShutter.open()
+        # close pump shutter
+        # print('Closing pump shutter')
+        PumpShutter.close()
         time.sleep(1)
 
         parent = self.getParentMacro()
@@ -63,9 +63,9 @@ def userPreAcq(self):
             mnt_grp     = self.getObj(self.getEnv('ActiveMntGrp'), type_class=Type.MeasurementGroup)
             state, data = mnt_grp.count(integ_time)
 
-        # close pump shutter
-        # print('Closing punp shutter')
-        PumpShutter.close()
+        # open pump shutter
+        # print('Opening punp shutter')
+        PumpShutter.open()
         time.sleep(1)
     else:
         pass
