@@ -4,61 +4,61 @@ from tango import DeviceProxy
 from sardana.macroserver.macro import macro
 
 @macro()
-def ProbeOn(self):
-    """Macro ProbeOn"""
+def probeon(self):
+    """Macro probeon"""
     
-    Probe=DeviceProxy('raremag/ThorlabsMFF102/flip01')
-    if Probe.isClose:
+    Probe=DeviceProxy('tango://hertz.nano.lab:10000/laser/ThorlabsMFF100/probe_shutter')
+    if Probe.mffstate==0:
         self.output("Probe shutter is already open")
     else:
         Probe.close()
-        time.sleep(1)
-        if Probe.isClose:
+        time.sleep(.75)
+        if Probe.mffstate==0:
             self.output("Probe shutter opened")
         else:
-            self.output("Could not open Probe shutter")
+            self.output("Could not open probe shutter")
 
 @macro()
-def ProbeOff(self):
-    """Macro ProbeOff"""
+def probeoff(self):
+    """Macro probeoff"""
     
-    Probe=DeviceProxy('raremag/ThorlabsMFF102/flip01')
-    if Probe.isOpen:
+    Probe=DeviceProxy('tango://hertz.nano.lab:10000/laser/ThorlabsMFF100/probe_shutter')
+    if Probe.mffstate==1:
         self.output("Probe shutter is already closed")
     else:
         Probe.open()
-        time.sleep(1)
-        if Probe.isOpen:
+        time.sleep(.75)
+        if Probe.mffstate==1:
             self.output("Probe shutter closed")
         else:
-            self.output("Could not close Probe shutter")
+            self.output("Could not close probe shutter")
 
 @macro()
-def PumpOn(self):
-    """Macro PumpOn"""
+def pumpon(self):
+    """Macro pumpon"""
     
-    Pump=DeviceProxy('raremag/ThorlabsMFF102/flip02')
-    if Pump.isOpen:
+    Pump=DeviceProxy('tango://hertz.nano.lab:10000/laser/ThorlabsMFF100/pump_shutter')
+    if Pump.mffstate==1:
         self.output("Pump shutter is already open")
     else:
         Pump.open()
-        time.sleep(1)
-        if Pump.isOpen:
+        time.sleep(.75)
+        if Pump.mffstate==1:
             self.output("Pump shutter opened")
         else:
-            self.output("Could not open Pump shutter")
+            self.output("Could not open pump shutter")
 
 @macro()
-def PumpOff(self):
-    """Macro PumpOff"""
+def pumpoff(self):
+    """Macro pumpoff"""
     
-    Pump=DeviceProxy('raremag/ThorlabsMFF102/flip02')
-    if Pump.isClose:
+    Pump=DeviceProxy('tango://hertz.nano.lab:10000/laser/ThorlabsMFF100/pump_shutter')
+    if Pump.mffstate==0:
         self.output("Pump shutter is already closed")
     else:
         Pump.close()
-        time.sleep(1)
-        if Pump.isClose:
+        time.sleep(.75)
+        if Pump.mffstate==0:
             self.output("Pump shutter closed")
         else:
-            self.output("Could not close Pump shutter")
+            self.output("Could not close pump shutter")

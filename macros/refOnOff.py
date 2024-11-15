@@ -10,7 +10,13 @@ def pumprefon(self):
     
     # enable reference counters
     mnt_grp = self.getObj(self.getEnv('ActiveMntGrp'), type_class=Type.MeasurementGroup)
-    mnt_grp.setEnabled(True, "dummy2DUnpumped", "epochUnpumped", "thorlabsPM1Unpumped", "ADC0Unpumped", "ADC1Unpumped")
+    mnt_grp.setEnabled(True, "epochUnpumped", "ADC0Unpumped", "ADC1Unpumped", "pm_pumpUnpumped", "pressure_readUnpumped")
+
+    if acqConf['specCCDon']==True:
+        mnt_grp.setEnabled(True, "specUnpumped", "spec2Unpumped", "spec3Unpumped")
+
+    if acqConf['refCCDon']==True:
+        mnt_grp.setEnabled(True, "refUnpumped")
 
 
 @macro()    
@@ -23,5 +29,5 @@ def pumprefoff(self):
     
     # disable reference counters
     mnt_grp = self.getObj(self.getEnv('ActiveMntGrp'), type_class=Type.MeasurementGroup)
-    mnt_grp.setEnabled(False, "dummy2DUnpumped", "epochUnpumped", "thorlabsPM1Unpumped", "ADC0Unpumped", "ADC1Unpumped")
+    mnt_grp.setEnabled(False, "epochUnpumped", "ADC0Unpumped", "ADC1Unpumped", "pm_pumpUnpumped", "pressure_readUnpumped", "specUnpumped", "spec2Unpumped", "spec3Unpumped", "refUnpumped")
     

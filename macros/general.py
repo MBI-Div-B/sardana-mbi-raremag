@@ -20,6 +20,18 @@ def acqconf(self):
 
     acqConf['refOn'] = ref_on
 
+    spec_ccd_on = self.input("spec CCD counter On/Off?", data_type=Type.Boolean,
+                      title="spec CCD counter", key=label, unit=unit,
+                      default_value=acqConf['specCCDon'])
+
+    acqConf['specCCDon'] = spec_ccd_on
+
+    ref_ccd_on = self.input("ref CCD counter On/Off?", data_type=Type.Boolean,
+                      title="ref CCD counter", key=label, unit=unit,
+                      default_value=acqConf['refCCDon'])
+
+    acqConf['refCCDon'] = ref_ccd_on
+
     self.setEnv('acqConf', acqConf)
     
     self.execMacro('waittime')
@@ -32,9 +44,11 @@ def acqconf(self):
 @macro()
 def acqrep(self):
     acqConf = self.getEnv('acqConf')
-    self.output('Gen. Settings   : %s | %s | Waittime = %.2f s', 
+    self.output('Gen. Settings   : %s | %s | %s | %s | Waittime = %.2f s', 
                 ('Alt ON' if acqConf['altOn'] else 'Alt OFF'),
                 ('Ref ON' if acqConf['refOn'] else 'Ref OFF'),
+                ('spec CCD ON' if acqConf['specCCDon'] else 'spec CCD OFF'),
+                ('ref CCD ON' if acqConf['refCCDon'] else 'ref CCD OFF'),
                 acqConf['waitTime'])
     self.execMacro('magnrep')
     self.execMacro('powerrep')

@@ -13,7 +13,8 @@ class AltOn2DPseudoCounterController(PseudoCounterController):
     
     def __init__(self, inst, props, *args, **kwargs):
         PseudoCounterController.__init__(self,inst,props, *args, **kwargs)
-        self.magnetState = DeviceProxy("raremag/MagnetState/magnet")
+        #self.magnetState = DeviceProxy("raremag/MagnetState/magnet")
+        self.magnet = DeviceProxy("tango://hertz.nano.lab:10000/reflectometer/KepcoSerialGPIB/magnet")
         
     def GetAxisAttributes(self, axis):
         axis_attrs = PseudoCounterController.GetAxisAttributes(self, axis)
@@ -25,7 +26,8 @@ class AltOn2DPseudoCounterController(PseudoCounterController):
     def Calc(self, axis, counters):
         counter = counters[0]
         try:
-            self.field = self.magnetState.magnet
+            #self.field = self.magnetState.magnet
+            self.field = self.magnet.current
             
             if self.field < 0:
                 self.value = counter

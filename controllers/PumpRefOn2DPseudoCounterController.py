@@ -9,7 +9,7 @@ class PumpRefOn2DPseudoCounterController(PseudoCounterController):
     
     def __init__(self, inst, props, *args, **kwargs):
         PseudoCounterController.__init__(self,inst,props, *args, **kwargs)
-        self.PumpShutter = DeviceProxy('raremag/ThorlabsMFF102/flip02')
+        self.PumpShutter = DeviceProxy('tango://hertz.nano.lab:10000/laser/ThorlabsMFF100/pump_shutter')
         
     def GetAxisAttributes(self, axis):
         axis_attrs = PseudoCounterController.GetAxisAttributes(self, axis)
@@ -21,7 +21,7 @@ class PumpRefOn2DPseudoCounterController(PseudoCounterController):
     def Calc(self, axis, counters):
         counter = counters[0]
         try:
-            if self.PumpShutter.isClose:
+            if self.PumpShutter.mffstate==0:
                 self.value = counter
         except:
             pass

@@ -1,7 +1,8 @@
-from sardana.macroserver.macro import Macro, Hookable, Type, Optional
+from sardana.macroserver.macro import Macro, Hookable, Type, Optional, macro
 from PyTango import DevState
+import logging
 
-class cte(Macro, Hookable):
+class cte_old(Macro, Hookable):
 
     hints = {'allowsHooks': ('pre-acq', 'post-acq')}
     param_def = [
@@ -60,3 +61,19 @@ class cte(Macro, Hookable):
 
             __iteration += 1
             self.outputBlock('Continuous run... %d' % __iteration)
+
+@macro([["integ_time", Type.Float, 1.0, "Integration time"]])
+def cte(self, integ_time):
+    """Continuous ct loop"""
+
+    ct, _ = self.createMacro('ct', integ_time)
+    ct.log_obj.setLevel(logging.ERROR)
+
+    self.outputDate()
+    self.outputBlock('Continuous run...')
+    __iteration = 0
+
+    while True:
+        self.runMacro(ct)
+        __iteration += 1
+        self.outputBlock('Continuous run... %d' % __iteration)

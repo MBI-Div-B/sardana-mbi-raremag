@@ -9,6 +9,7 @@ import time
 from dirsync import sync
 import os
 from PyTango import DeviceProxy
+import subprocess
 
 @macro()
 def userPreAcq(self):
@@ -27,10 +28,10 @@ def userPreAcq(self):
         ampl        = magnConf['ampl']
         magwaittime = magnConf['waitTime']
         magnet      = self.getMotion(["magnet"])
-        magnetState = DeviceProxy('raremag/MagnetState/magnet')
+        #magnetState = DeviceProxy('raremag/MagnetState/magnet')
         
         magnet.move(-1*ampl)
-        magnetState.magnet = -1*ampl
+        #magnetState.magnet = -1*ampl
         
         self.debug('mag. waiting for %.2f s', magwaittime)
         time.sleep(magwaittime)        
@@ -42,7 +43,7 @@ def userPreAcq(self):
             state, data = mnt_grp.count(integ_time)
                        
         magnet.move(+1*ampl)
-        magnetState.magnet = +1*ampl
+        #magnetState.magnet = +1*ampl
         
         self.debug('mag. waiting for %.2f s', magwaittime)
         time.sleep(magwaittime)                
@@ -50,12 +51,12 @@ def userPreAcq(self):
         pass
 
     if refOn:
-        PumpShutter=DeviceProxy('raremag/ThorlabsMFF102/flip02')
+        PumpShutter=DeviceProxy('tango://hertz.nano.lab:10000/laser/ThorlabsMFF100/pump_shutter')
 
         # close pump shutter
         # print('Closing pump shutter')
         PumpShutter.close()
-        time.sleep(1)
+        time.sleep(0.75)
 
         parent = self.getParentMacro()
         if parent:
@@ -64,9 +65,9 @@ def userPreAcq(self):
             state, data = mnt_grp.count(integ_time)
 
         # open pump shutter
-        # print('Opening punp shutter')
+        # print('Opening pump shutter')
         PumpShutter.open()
-        time.sleep(1)
+        time.sleep(0.75)
     else:
         pass
     
@@ -85,13 +86,35 @@ def userPreScan(self):
     
 @macro()
 def userPostScan(self):
-    ScanDir = self.getEnv('ScanDir')
-    RemoteScanDir = self.getEnv('RemoteScanDir')
-        
-    if os.path.exists(RemoteScanDir):
-        self.info('Syncing data from %s to %s', ScanDir, RemoteScanDir)
-        sync(ScanDir, RemoteScanDir, 'sync', create=True)        
+    scanDir = self.getEnv('ScanDir')
+    
+    if scanDir != "" and scanDir != None:
+        self.output("Mirroring on NAS initiated...")
+        result = subprocess.run(
+            f'rsync -xa -v --progress {scanDir}/* data_writer@nasbnano.nano.lab:/share/data/reflectometer',
+            shell=True,
+            stdout=subprocess.PIPE,
+        )
+        self.output(result.stdout.decode("utf-8"))
+        self.output("End of mirroring.")
     else:
-        self.warning('RemoteScanDir %s does not exist - no folder syncing', RemoteScanDir)
+        self.output("ScanDir is not set, please check the save path.")
     
-    
+@macro()
+def userPreMv(self):
+    acqConf    = self.getEnv('acqConf')
+    securityOn = acqConf['securityOn']
+
+    if securityOn:
+        for moveable in self.parent_macro.motors:
+            if moveable.name == 'tth':
+                ref_x = self.getMotion(["ref_x"])
+                #ref_x = self.getMoveables("ref_x")
+                if ref_x.readPosition()[0] > 0:
+                    self.outputBlock('ref_x needs to be 0.0 before this movement is allowed, press Ctrl+C to abort')
+                    #self.outputBlock(str(self.parent_macro.getParameters()))
+                    self.parent_macro.stop()
+    else:
+        self.outputBlock('WARNING! You are about to move motors with security measures turned OFF!')
+        time.sleep(5)
+        pass
