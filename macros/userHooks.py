@@ -86,6 +86,9 @@ def userPreScan(self):
     
 @macro()
 def userPostScan(self):
+    Soundbox=DeviceProxy('tango://newton.nano.lab:10000/reflectometer/Soundbox/newton')
+    Soundbox.sound='/home/labuser/Music/beep1.mp3'
+
     scanDir = self.getEnv('ScanDir')
     
     if scanDir != "" and scanDir != None:

@@ -28,7 +28,7 @@ def wpCalibScan(self, counter):
     
     self.execMacro('waittime', newWaitTime)
     self.execMacro('altoff')
-    self.execMacro('PumpOff')   
+    self.execMacro('pumpoff')   
         
     scan, _ = self.createMacro('ascan', 'wp_pump', '-5', '55', '60', '1')
     # createMacro returns a tuple composed from a macro object

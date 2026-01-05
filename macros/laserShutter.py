@@ -2,6 +2,7 @@ import time
 
 from tango import DeviceProxy
 from sardana.macroserver.macro import macro
+#from pygame import mixer
 
 @macro()
 def probeon(self):
@@ -36,6 +37,9 @@ def probeoff(self):
 @macro()
 def pumpon(self):
     """Macro pumpon"""
+
+    Soundbox=DeviceProxy('tango://newton.nano.lab:10000/reflectometer/Soundbox/newton')
+    Soundbox.sound='/home/labuser/Music/beep2.mp3'
     
     Pump=DeviceProxy('tango://hertz.nano.lab:10000/laser/ThorlabsMFF100/pump_shutter')
     if Pump.mffstate==1:
@@ -45,6 +49,9 @@ def pumpon(self):
         time.sleep(.75)
         if Pump.mffstate==1:
             self.output("Pump shutter opened")
+            #mixer.init()
+            #mixer.music.load("/home/labuser/Music/beep1.mp3")
+            #mixer.music.play()
         else:
             self.output("Could not open pump shutter")
 
